@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import React from "react";
 
-const TextInput = ({ label, name, value, onChange }) => {
+const TextInput = ({ label, name, value, onChange, error }) => {
   return (
     <TextField
       label={label}
@@ -10,6 +10,8 @@ const TextInput = ({ label, name, value, onChange }) => {
       value={value}
       variant="outlined"
       fullWidth
+      error={error ? true : false}
+      helperText={error || ""}
     />
   );
 };

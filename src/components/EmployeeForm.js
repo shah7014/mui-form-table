@@ -1,6 +1,6 @@
-import React from "react";
 import { Box, Paper, Stack } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
+import React from "react";
 import { useForm } from "../hooks/useForm";
 import Controls from "./controls";
 
@@ -11,6 +11,33 @@ const departmentOptions = [
 ];
 
 const EmployeeForm = () => {
+  // validate each field. once user types
+  // validate on submit as well
+  const validateFields = (field = newEmployee) => {
+    let temp = {};
+
+    if ("fullName" in field) {
+      temp.fullName =
+        field["fullName"].length > 0 ? "" : "Full Name is required";
+    }
+    if ("mobile" in field) {
+      temp.mobile =
+        field["mobile"].length > 9
+          ? ""
+          : "Mobile Number must have more than 9 digits";
+    }
+    if ("departmentId" in field) {
+      temp.departmentId =
+        field["departmentId"].length > 0 ? "" : "Department is required";
+    }
+    setErrors((prev) => ({
+      ...prev,
+      ...temp,
+    }));
+
+    return Object.values(temp).filter((v) => v !== "").length === 0;
+  };
+
   const initialValues = {
     fullName: "",
     email: "",
@@ -26,14 +53,23 @@ const EmployeeForm = () => {
     values: newEmployee,
     handleChange,
     setValues,
-  } = useForm(initialValues);
+    errors,
+    setErrors,
+  } = useForm(initialValues, true, validateFields);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const isFormValid = validateFields();
+
+    if (isFormValid) {
+      window.alert("Testing...");
+    }
   };
 
   const handleReset = () => {
     setValues(initialValues);
+    setErrors({});
   };
 
   return (
@@ -47,6 +83,7 @@ const EmployeeForm = () => {
                 name="fullName"
                 onChange={handleChange}
                 value={newEmployee.fullName}
+                error={errors.fullName}
               />
             </Grid>
             <Grid xs={12} md={6}>
@@ -72,6 +109,7 @@ const EmployeeForm = () => {
                 name="mobile"
                 onChange={handleChange}
                 value={newEmployee.mobile}
+                error={errors.mobile}
               />
             </Grid>
             <Grid xs={12} md={6}>
@@ -89,6 +127,7 @@ const EmployeeForm = () => {
                 onChange={handleChange}
                 label={"Department"}
                 options={departmentOptions}
+                error={errors.departmentId}
               />
             </Grid>
             <Grid xs={12} md={6}>

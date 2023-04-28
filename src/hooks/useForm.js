@@ -1,18 +1,33 @@
-import { useCallback, useState } from "react";
+import { useState } from "react";
 
-export const useForm = (initialValues) => {
+export const useForm = (
+  initialValues,
+  validateOnChange = false,
+  validateFields
+) => {
   const [values, setValues] = useState(initialValues);
 
-  const handleChange = useCallback((e) => {
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setValues((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
-  }, []);
+
+    // dont validate on values state. result might be inconsistent
+    if (validateOnChange) {
+      validateFields({ [name]: value });
+    }
+  };
 
   return {
     values,
     setValues,
     handleChange,
+    errors,
+    setErrors,
   };
 };
