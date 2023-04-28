@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Paper } from "@mui/material";
+import { Box, Paper, Stack } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { useForm } from "../hooks/useForm";
 import Controls from "./controls";
@@ -22,12 +22,24 @@ const EmployeeForm = () => {
     isPermanent: false,
   };
 
-  const { values: newEmployee, handleChange } = useForm(initialValues);
+  const {
+    values: newEmployee,
+    handleChange,
+    setValues,
+  } = useForm(initialValues);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  const handleReset = () => {
+    setValues(initialValues);
+  };
 
   return (
     <Box m={4}>
       <Paper sx={{ padding: "16px" }}>
-        <form>
+        <form onSubmit={handleSubmit}>
           <Grid container spacing={4}>
             <Grid xs={12} md={6}>
               <Controls.Input
@@ -88,6 +100,13 @@ const EmployeeForm = () => {
               />
             </Grid>
           </Grid>
+          <Stack flexDirection="row" gap={3} justifyContent="center" mt={3}>
+            <Controls.Button type="submit" label="Submit"></Controls.Button>
+            <Controls.Button
+              label="Reset"
+              onClick={handleReset}
+            ></Controls.Button>
+          </Stack>
         </form>
       </Paper>
     </Box>
